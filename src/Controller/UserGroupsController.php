@@ -36,12 +36,12 @@ class UserGroupsController extends AbstractController
      */
     public function delete(Request $r, int $id): Response
     {
-        // $submittedToken = $r->request->get('token');
+        $submittedToken = $r->request->get('token');
 
-        // if (!$this->isCsrfTokenValid('user_groups_hidden_index', $submittedToken)) {
-        //     $r->getSession()->getFlashBag()->add('errors', 'Blogas Tokenas CSRF');
-        //     return $this->redirectToRoute('user_groups_index');
-        // }
+        if (!$this->isCsrfTokenValid('user_group_hidden', $submittedToken)) {
+            $r->getSession()->getFlashBag()->add('errors', 'Bad Token CSRF');
+            return $this->redirectToRoute('user_groups_index');
+        }
 
         $user = $this->getDoctrine()
         ->getRepository(User::class)

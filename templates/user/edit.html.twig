@@ -28,13 +28,13 @@
 						</td>
 		                <td>
 		                    <select name="user_group">
-                            {% if user.grades.count == null %}
+                            {% if user.group.count == null %}
 		                        {% for group in groups %}
                                     <option value="{{group.id}}"> {{group.title}} </option>     
 		                        {% endfor %}
                             {% else %}
 								{% for group in groups %}
-									{% for userGroup in user.grades %}
+									{% for userGroup in user.group %}
 										{% if group.id != userGroup.id %} 
 										<option value="{{group.id}}"> {{group.title}} </option>
 										{% endif %}
@@ -44,7 +44,7 @@
 		                    </select>
 		                </td>
 		                <td>
-		                    <input type="hidden" name="token" value="{{ csrf_token('user_hidden_index') }}"/> 
+		                    <input type="hidden" name="token" value="{{ csrf_token('user_hidden') }}"/> 
 		                    <button type="submit">Add user to group</button>
 		                </td>
 		            </tr>

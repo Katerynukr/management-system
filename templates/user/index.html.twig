@@ -28,7 +28,7 @@
                             </td>
                             <td>
                                 <form action="{{ path('user_delete', {id: user.id}) }}" method="POST">
-                                    <input type="hidden" name="token" value="{{ csrf_token('user_hidden_index') }}" />
+                                    <input type="hidden" name="token" value="{{ csrf_token('user_hidden') }}" />
                                     <button type="submit"> X </button>
                                 </form>
                             </td>

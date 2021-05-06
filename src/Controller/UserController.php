@@ -17,7 +17,7 @@ class UserController extends AbstractController
      */
     public function index(Request $r): Response
     {
-        //$this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         
         $users = $this->getDoctrine()
         ->getRepository(User::class)
@@ -25,7 +25,8 @@ class UserController extends AbstractController
 
         return $this->render('user/index.html.twig', [
             'users'=>$users,
-            //'errors' => $r->getSession()->getFlashBag()->get('errors', [])
+            'success' => $r->getSession()->getFlashBag()->get('success', []),
+            'errors' => $r->getSession()->getFlashBag()->get('errors', [])
         ]);
     }
 
@@ -34,13 +35,16 @@ class UserController extends AbstractController
      */
     public function create(Request $r): Response
     {
+        $user_name = $r->getSession()->getFlashBag()->get('user_name', []);
+
         $groups = $this->getDoctrine()
         ->getRepository(Group::class)
         ->findAll();
         
         return $this->render('user/create.html.twig', [
             'groups' => $groups,
-            //'errors' => $r->getSession()->getFlashBag()->get('errors', [])
+            'user_name' => $user_name[0] ?? '',
+            'errors' => $r->getSession()->getFlashBag()->get('errors', [])
         ]);
     }
 
@@ -51,39 +55,29 @@ class UserController extends AbstractController
     {
         $submittedToken = $r->request->get('token');
         
-        if (!$this->isCsrfTokenValid('user_hidden_index', $submittedToken)) {
-        //     $r->getSession()->getFlashBag()->add('errors', 'Blogas Tokenas CSRF');
+        if (!$this->isCsrfTokenValid('user_hidden', $submittedToken)) {
+             $r->getSession()->getFlashBag()->add('errors', 'Bad Token CSRF');
              return $this->redirectToRoute('user_create');
         }
-
-        // $group = $this->getDoctrine()
-        // ->getRepository(Group::class)
-        // ->find($r->request->get('user_group_id'));
 
         $user = new User;
         $user->
         setName($r->request->get('user_name'));
 
-        // if($group != null){
-        //      //     $r->getSession()->getFlashBag()->add('errors', 'Choose author from the list');
-        //     $user->
-        //     addGrade($group);
-        // }
-
-        // $errors = $validator->validate($book);
-        // if (count($errors) > 0){
-        //     foreach($errors as $error) {
-        //         $r->getSession()->getFlashBag()->add('errors', $error->getMessage());
-        //     }
-        //     return $this->redirectToRoute('book_create');
-        // }
-        // if(null === $author) {
-        //     return $this->redirectToRoute('book_create');
-        // }
+        $errors = $validator->validate($user);
+        if (count($errors) > 0){
+            foreach($errors as $error) {
+                $r->getSession()->getFlashBag()->add('errors', $error->getMessage());
+            }
+            $r->getSession()->getFlashBag()->add('user_name', $r->request->get('user_name'));
+            return $this->redirectToRoute('user_create');
+        }
 
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->persist($user);
         $entityManager->flush();
+
+        $r->getSession()->getFlashBag()->add('success', 'User was successfully created');
 
         return $this->redirectToRoute('user_index');
     }
@@ -95,8 +89,8 @@ class UserController extends AbstractController
     {
         $submittedToken = $r->request->get('token');
 
-        if (!$this->isCsrfTokenValid('user_hidden_index', $submittedToken)) {
-            $r->getSession()->getFlashBag()->add('errors', 'Blogas Tokenas CSRF');
+        if (!$this->isCsrfTokenValid('user_hidden', $submittedToken)) {
+            $r->getSession()->getFlashBag()->add('errors', 'Bad Token CSRF');
             return $this->redirectToRoute('user_index');
         }
 
@@ -107,6 +101,8 @@ class UserController extends AbstractController
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->remove($user);
         $entityManager->flush();
+
+        $r->getSession()->getFlashBag()->add('success', 'User was successfully deleted');
 
         return $this->redirectToRoute('user_index');
     }
@@ -127,7 +123,7 @@ class UserController extends AbstractController
         return $this->render('user/edit.html.twig', [
             'user' => $user,
             'groups' => $groups,
-            //'errors' => $r->getSession()->getFlashBag()->get('errors', [])
+            'errors' => $r->getSession()->getFlashBag()->get('errors', [])
         ]);
     }
 
@@ -141,8 +137,8 @@ class UserController extends AbstractController
         ->find($id);
 
         $submittedToken = $r->request->get('token');
-        if (!$this->isCsrfTokenValid('user_hidden_index', $submittedToken)) {
-           // $r->getSession()->getFlashBag()->add('errors', 'Blogas Tokenas CSRF');
+        if (!$this->isCsrfTokenValid('user_hidden', $submittedToken)) {
+            $r->getSession()->getFlashBag()->add('errors', 'Bad Token CSRF');
             return $this->redirectToRoute('user_edit_group',  ['id'=>$user->getId()] );
         }
         
@@ -153,17 +149,19 @@ class UserController extends AbstractController
         $user->
         addGrade($group);
 
-        // $errors = $validator->validate($book);
-        // if (count($errors) > 0){
-        //     foreach($errors as $error) {
-        //         $r->getSession()->getFlashBag()->add('errors', $error->getMessage());
-        //     }
-        //     return $this->redirectToRoute('book_edit', ['id'=>$book->getId()] );
-        // }
+        $errors = $validator->validate($user);
+        if (count($errors) > 0){
+            foreach($errors as $error) {
+                $r->getSession()->getFlashBag()->add('errors', $error->getMessage());
+            }
+            return $this->redirectToRoute('user_edit', ['id'=>$book->getId()] );
+        }
 
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->persist($user);
         $entityManager->flush();
+
+        $r->getSession()->getFlashBag()->add('success', 'User was successfully added to the group');
 
         return $this->redirectToRoute('user_index');
     }

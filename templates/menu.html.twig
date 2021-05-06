@@ -1,24 +1,39 @@
  <header class="header">
         <nav class="navigation">
-            <div class="dropdown">
-            <button class="dropbtn">User</button>
-                <div class="dropdown-content">
-                <a href="{{path('user_index')}}">User List</a>
-                <a href="{{path('user_create')}}">User Create</a>
+            {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+                <div class="dropdown">
+                <button class="dropbtn">User</button>
+                    <div class="dropdown-content">
+                    <a href="{{path('user_index')}}">User List</a>
+                    <a href="{{path('user_create')}}">User Create</a>
+                    </div>
                 </div>
-            </div>
-            <div class="dropdown">
-            <button class="dropbtn">Group</button>
-                <div class="dropdown-content">
-                <a href="{{path('group_index')}}">Group List</a>
-                <a href="{{path('group_create')}}">Group Create</a>
+                <div class="dropdown">
+                <button class="dropbtn">Group</button>
+                    <div class="dropdown-content">
+                    <a href="{{path('group_index')}}">Group List</a>
+                    <a href="{{path('group_create')}}">Group Create</a>
+                    </div>
                 </div>
-            </div>
-            <div class="dropdown">
-            <button class="dropbtn">Users in Groups</button>
-                <div class="dropdown-content">
-                <a href="{{path('user_groups_index')}}">List</a>
+                <div class="dropdown">
+                <button class="dropbtn">Users in Groups</button>
+                    <div class="dropdown-content">
+                    <a href="{{path('user_groups_index')}}">List</a>
+                    </div>
                 </div>
-            </div>
+            {% else %}
+                <div class="dropdown">
+                <button class="dropbtn">Login</button>
+                    <div class="dropdown-content">
+                    <a href="{{path('app_login')}}">Login</a>
+                    </div>
+                </div>
+                <div class="dropdown">
+                    <button class="dropbtn">Register</button>
+                    <div class="dropdown-content">
+                    <a href="{{path('app_register')}}">Register</a>
+                    </div>
+                </div>
+			{% endif %}
         </nav>
     </header>

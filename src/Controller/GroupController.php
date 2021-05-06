@@ -30,8 +30,8 @@ class GroupController extends AbstractController
         return $this->render('group/index.html.twig', [
             'groups' => $groups,
             'sortBy' => $r->query->get('sort_by') ?? 'default',
-            //'success' => $r->getSession()->getFlashBag()->get('success', []),
-            //'errors' => $r->getSession()->getFlashBag()->get('errors', [])
+            'success' => $r->getSession()->getFlashBag()->get('success', []),
+            'errors' => $r->getSession()->getFlashBag()->get('errors', [])
         ]);
     }
 
@@ -44,7 +44,7 @@ class GroupController extends AbstractController
         $group_title = $r->getSession()->getFlashBag()->get('group_title', []);
 
         return $this->render('group/create.html.twig', [
-        //    'errors' => $r->getSession()->getFlashBag()->get('errors', []),
+            'errors' => $r->getSession()->getFlashBag()->get('errors', []),
             'group_title' => $group_title[0] ?? ''
         ]);
     }
@@ -56,32 +56,30 @@ class GroupController extends AbstractController
     {
         $submittedToken = $r->request->get('token');
 
-         if (!$this->isCsrfTokenValid('group_hidden_index', $submittedToken)) {
-        //     $r->getSession()->getFlashBag()->add('errors', 'Blogas Tokenas CSRF');
-             return $this->redirectToRoute('author_create');
+         if (!$this->isCsrfTokenValid('group_hidden', $submittedToken)) {
+            $r->getSession()->getFlashBag()->add('errors', 'Bad Token CSRF');
+             return $this->redirectToRoute('group_create');
          }
 
         $group = new Group;
         $group->
         setTitle($r->request->get('group_title'));
 
-       // $errors = $validator->validate($author);
+       $errors = $validator->validate($group);
 
-        // dd(count($errors));
-        // if (count($errors) > 0){
-        //     foreach($errors as $error) {
-        //         $r->getSession()->getFlashBag()->add('errors', $error->getMessage());
-        //     }
-        //     $r->getSession()->getFlashBag()->add('author_name', $r->request->get('author_name'));
-        //     $r->getSession()->getFlashBag()->add('author_surname', $r->request->get('author_surname'));
-        //     return $this->redirectToRoute('author_create');
-        // }
+        if (count($errors) > 0){
+            foreach($errors as $error) {
+                $r->getSession()->getFlashBag()->add('errors', $error->getMessage());
+            }
+            $r->getSession()->getFlashBag()->add('group_title', $r->request->get('group_title'));
+            return $this->redirectToRoute('group_create');
+        }
 
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->persist($group);
         $entityManager->flush();
 
-        //$r->getSession()->getFlashBag()->add('success', 'Author was successfully created');
+        $r->getSession()->getFlashBag()->add('success', 'Group was successfully created');
 
         return $this->redirectToRoute('group_index');
     }
@@ -94,23 +92,25 @@ class GroupController extends AbstractController
        $submittedToken = $r->request->get('token');
         
        
-        if (!$this->isCsrfTokenValid('group_hidden_index', $submittedToken)) {
-            //$r->getSession()->getFlashBag()->add('errors', 'Blogas Tokenas CSRF');
-            return $this->redirectToRoute('author_index');
+        if (!$this->isCsrfTokenValid('group_hidden', $submittedToken)) {
+            $r->getSession()->getFlashBag()->add('errors', 'Bad Token CSRF');
+            return $this->redirectToRoute('group_index');
         }
 
         $group = $this->getDoctrine()
         ->getRepository(Group::class)
         ->find($id);
 
-        // if ($author->getBooks()->count() > 0) {
-        //     $r->getSession()->getFlashBag()->add('errors', 'You cannot deleate the author because it has books' );
-        //     return $this->redirectToRoute('author_index');
-        // }
+        if ($group->getUsers()->count() > 0) {
+            $r->getSession()->getFlashBag()->add('errors', 'You cannot deleate the group because it has users' );
+            return $this->redirectToRoute('group_index');
+        }
 
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->remove($group);
         $entityManager->flush();
+
+        $r->getSession()->getFlashBag()->add('success', 'Group was successfully deleted');
 
         return $this->redirectToRoute('group_index');
     }

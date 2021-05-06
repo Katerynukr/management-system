@@ -23,11 +23,11 @@
                         <tr>
                             <td>{{ user.name }}</td>
                             <td>
-                                {% for group in user.grades %}  
+                                {% for group in user.group %}  
                                     <form class="group" action="{{ path('user_groups_delete', {id: user.id}) }}" method="POST">    
                                             <span class="left">{{group.title}}</span>
                                             <input type="hidden" name="group_id" value="{{group.id}}" />
-                                            <input type="hidden" name="token" value="{{ csrf_token('user_group_hidden_index') }}" />
+                                            <input type="hidden" name="token" value="{{ csrf_token('user_group_hidden') }}" />
                                             <button class="right" type="submit"> X </button>
                                     </form> 
                                 {% endfor %}

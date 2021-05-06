@@ -6,6 +6,7 @@ use App\Repository\GroupRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=GroupRepository::class)
@@ -22,11 +23,18 @@ class Group
 
     /**
      * @ORM\Column(type="string", length=100)
+     * @Assert\NotBlank(message="Title field can not be empty!")
+     * @Assert\Length(
+     *      min = 2,
+     *      max = 100,
+     *      minMessage = "The title is too short. Minimum length is {{ limit }} characters",
+     *      maxMessage = "The title cannot be longer than {{ limit }} characters"
+     * )
      */
     private $title;
 
     /**
-     * @ORM\ManyToMany(targetEntity=User::class, mappedBy="grades")
+     * @ORM\ManyToMany(targetEntity=User::class, mappedBy="group")
      */
     private $users;
 

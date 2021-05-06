@@ -45,7 +45,7 @@
                         <td>{{ group.title }}</td>
                         <td>
                             <form action="{{ path('group_delete', {id: group.id}) }}" method="POST">
-                                <input type="hidden" name="token" value="{{ csrf_token('group_hidden_index') }}" />
+                                <input type="hidden" name="token" value="{{ csrf_token('group_hidden') }}" />
                                 <button type="submit" class="delete btn"> X </button>
                             </form>
                         </td>
