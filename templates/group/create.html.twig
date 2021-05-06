@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Create New Group
+    
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="center"> Create New Group </h1>
+        </div>   
+    </div>
+    <div class="row ">
+        <div class="col-12 center">
+            <form action="{{ path('group_store') }}" method="POST">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Enter group Title</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <input type="text" class="form-control" name="group_title" value="{{ group_title }}">
+                            </td>
+                            <td>
+                                <input type="hidden" name="token" value="{{ csrf_token('group_hidden_index') }}" />
+                                <button type="submit">Add new group </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </form>
+        </div>   
+    </div>
+</div>   
+{% endblock %}

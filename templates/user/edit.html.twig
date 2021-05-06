@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Add user in a Group
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="center"> Add User to Group</h1>
+		</div>
+	</div>
+	<div class="row ">
+	<div class="col-12 center">
+		<form action="{{path('user_update_group', {id: user.id})}}" method="POST">
+		    <table class="table">
+			 	<thead>
+		           <tr>
+		                <th>Name</th>
+		                <th>Groups</th>
+		                <th><th>
+		            </tr>
+				</thead>
+				<tbody>
+		            <tr>
+		                <td>
+							<input type="text" name="user_name" value="{{user.name}}">
+						</td>
+		                <td>
+		                    <select name="user_group">
+                            {% if user.grades.count == null %}
+		                        {% for group in groups %}
+                                    <option value="{{group.id}}"> {{group.title}} </option>     
+		                        {% endfor %}
+                            {% else %}
+								{% for group in groups %}
+									{% for userGroup in user.grades %}
+										{% if group.id != userGroup.id %} 
+										<option value="{{group.id}}"> {{group.title}} </option>
+										{% endif %}
+									{% endfor %} 
+								{% endfor %}
+                            {% endif %}
+		                    </select>
+		                </td>
+		                <td>
+		                    <input type="hidden" name="token" value="{{ csrf_token('user_hidden_index') }}"/> 
+		                    <button type="submit">Add user to group</button>
+		                </td>
+		            </tr>
+				</tbody>
+			</table>
+		</form> 
+	</div>
+</div>
+{% endblock %}

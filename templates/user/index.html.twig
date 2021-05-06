@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} {% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="center">List of Users </h1>
+        </div>   
+    </div>
+    <div class="row ">
+        <div class="col-12 center">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Add to group</th>
+                        <th>Delete</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                        <tr>
+                            <td> {{ user.name }}</td>
+                            <td>
+                                <a class="add-btn" href="{{ path('user_edit_group', {id: user.id}) }}">+</a>
+                            </td>
+                            <td>
+                                <form action="{{ path('user_delete', {id: user.id}) }}" method="POST">
+                                    <input type="hidden" name="token" value="{{ csrf_token('user_hidden_index') }}" />
+                                    <button type="submit"> X </button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

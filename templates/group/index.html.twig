@@ -1,0 +1,60 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Groups
+                
+            
+        
+    
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="center"> List of Groups </h1>
+        </div>
+	</div>
+    <div class="row ">
+	    <div class="col-12 center">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Group Title </th>
+                        <th> Delete </th>
+                        <th></th>
+                        <th> List order by:
+                            <form action="{{ path('group_index') }}" method="GET" class="sort-form">
+                            <select name="sort_by" class="btn btn-outline-dark dropdown-toggle">
+                                <option value="default"> default </option>
+                                <option value="sort_by_title_asc" {% if sortBy=='sort_by_title_asc' %} selected {% endif %}>
+                                    title a-z                          
+                                </option>
+                                <option value="sort_by_title_desc" {% if sortBy=='sort_by_title_desc' %} selected {% endif %}>
+                                    title z-a                     
+                                </option>
+                            </select>
+                            <button type="submit" class="btn btn-sm"> Sort! </button>
+                        </form>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for group in groups %}
+                    <tr>
+                        <td>{{ group.title }}</td>
+                        <td>
+                            <form action="{{ path('group_delete', {id: group.id}) }}" method="POST">
+                                <input type="hidden" name="token" value="{{ csrf_token('group_hidden_index') }}" />
+                                <button type="submit" class="delete btn"> X </button>
+                            </form>
+                        </td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+                     {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

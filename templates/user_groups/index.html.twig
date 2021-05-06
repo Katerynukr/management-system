@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Users in Groups{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="center">Users in Groups</h1>
+        </div>   
+    </div>
+    <div class="row ">
+        <div class="col-12 center">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>User Name</th>
+                        <th>Group Title</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                        <tr>
+                            <td>{{ user.name }}</td>
+                            <td>
+                                {% for group in user.grades %}  
+                                    <form class="group" action="{{ path('user_groups_delete', {id: user.id}) }}" method="POST">    
+                                            <span class="left">{{group.title}}</span>
+                                            <input type="hidden" name="group_id" value="{{group.id}}" />
+                                            <input type="hidden" name="token" value="{{ csrf_token('user_group_hidden_index') }}" />
+                                            <button class="right" type="submit"> X </button>
+                                    </form> 
+                                {% endfor %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>   
+    </div>
+</div>   
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+    Create new Book
+{% endblock %}
+{% block head %}{% endblock %}
+{% block body %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="center">  Create New User </h1>
+        </div>
+    </div>
+    <div class="row ">
+        <div class="col-12 center">
+            <form action="{{ path('user_store') }}" method="POST">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Enter User Name</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <input type="text" name="user_name">
+                            </td>
+                            <td>
+                                <input type="hidden" name="token" value="{{ csrf_token('user_hidden_index') }}" />
+                                <button type="submit"> Add New User</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+    
