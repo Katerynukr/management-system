@@ -35,6 +35,8 @@ class UserController extends AbstractController
      */
     public function create(Request $r): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
         $user_name = $r->getSession()->getFlashBag()->get('user_name', []);
 
         $groups = $this->getDoctrine()
@@ -48,7 +50,7 @@ class UserController extends AbstractController
         ]);
     }
 
-     /**
+    /**
      * @Route("/user/create", name="user_store", methods={"POST"})
      */
     public function store(Request $r, ValidatorInterface $validator): Response
@@ -112,6 +114,8 @@ class UserController extends AbstractController
      */
     public function edit(Request $r, int $id): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
         $user = $this->getDoctrine()
         ->getRepository(User::class)
         ->find($id);
@@ -146,8 +150,15 @@ class UserController extends AbstractController
         ->getRepository(Group::class)
         ->find($r->request->get('user_group'));
         
+        $groups = $user->getGroup();
+
+        if($groups->contains($group)){ 
+             $r->getSession()->getFlashBag()->add('errors', 'User was already added to this group');
+             return $this->redirectToRoute('user_index');
+        }
+
         $user->
-        addGrade($group);
+        addGroup($group);
 
         $errors = $validator->validate($user);
         if (count($errors) > 0){

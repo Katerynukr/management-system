@@ -81,7 +81,9 @@ a {
             background-color: #009879;
             font-family: Arial;
             }
-
+            .navigation-right{
+                float: right;
+            }
             .navigation a {
             float: left;
             font-size: 16px;
@@ -191,7 +193,7 @@ a {
                 .right{
                     float: right;
                 }
-                
+
         /* error */
         .error{
             text-align: center;

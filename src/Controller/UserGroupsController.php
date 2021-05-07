@@ -17,6 +17,8 @@ class UserGroupsController extends AbstractController
      */
     public function index(Request $r): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
         $groups =  $this->getDoctrine()
         ->getRepository(Group::class)
         ->findAll();
@@ -28,6 +30,7 @@ class UserGroupsController extends AbstractController
         return $this->render('user_groups/index.html.twig', [
             'groups' => $groups,
             'users'=>$users,
+            'success' => $r->getSession()->getFlashBag()->get('success', [])
         ]);
     }
 
@@ -52,11 +55,13 @@ class UserGroupsController extends AbstractController
         ->find($r->request->get('group_id'));
 
         $user->
-        removeGrade($group); 
+        removeGroup($group); 
 
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->persist($user);
         $entityManager->flush();
+
+        $r->getSession()->getFlashBag()->add('success', 'User was successfully deleated from the group');
 
         return $this->redirectToRoute('user_groups_index');
     }

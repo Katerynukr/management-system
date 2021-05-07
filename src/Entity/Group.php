@@ -72,7 +72,7 @@ class Group
     {
         if (!$this->users->contains($user)) {
             $this->users[] = $user;
-            $user->addGrade($this);
+            $user->addGroup($this);
         }
 
         return $this;

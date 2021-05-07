@@ -16,6 +16,8 @@ class GroupController extends AbstractController
      */
     public function index(Request $r): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
         $groups = $this->getDoctrine()
         ->getRepository(Group::class);
 
@@ -35,12 +37,13 @@ class GroupController extends AbstractController
         ]);
     }
 
-    
      /**
      * @Route("/group/create", name="group_create", methods= {"GET"})
      */
     public function create(Request $r): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
         $group_title = $r->getSession()->getFlashBag()->get('group_title', []);
 
         return $this->render('group/create.html.twig', [
@@ -56,10 +59,10 @@ class GroupController extends AbstractController
     {
         $submittedToken = $r->request->get('token');
 
-         if (!$this->isCsrfTokenValid('group_hidden', $submittedToken)) {
+        if (!$this->isCsrfTokenValid('group_hidden', $submittedToken)) {
             $r->getSession()->getFlashBag()->add('errors', 'Bad Token CSRF');
              return $this->redirectToRoute('group_create');
-         }
+        }
 
         $group = new Group;
         $group->
@@ -91,7 +94,6 @@ class GroupController extends AbstractController
     {
        $submittedToken = $r->request->get('token');
         
-       
         if (!$this->isCsrfTokenValid('group_hidden', $submittedToken)) {
             $r->getSession()->getFlashBag()->add('errors', 'Bad Token CSRF');
             return $this->redirectToRoute('group_index');

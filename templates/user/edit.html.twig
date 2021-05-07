@@ -1,7 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Add user in a Group
-{% endblock %}
+{% block title %} Add user in a Group {% endblock %}
 
 {% block body %}
 <div class="container">
@@ -28,19 +27,9 @@
 						</td>
 		                <td>
 		                    <select name="user_group">
-                            {% if user.group.count == null %}
-		                        {% for group in groups %}
-                                    <option value="{{group.id}}"> {{group.title}} </option>     
-		                        {% endfor %}
-                            {% else %}
-								{% for group in groups %}
-									{% for userGroup in user.group %}
-										{% if group.id != userGroup.id %} 
-										<option value="{{group.id}}"> {{group.title}} </option>
-										{% endif %}
-									{% endfor %} 
-								{% endfor %}
-                            {% endif %}
+							{% for group in groups %}
+								<option value="{{group.id}}"> {{group.title}} </option>
+							{% endfor %}
 		                    </select>
 		                </td>
 		                <td>

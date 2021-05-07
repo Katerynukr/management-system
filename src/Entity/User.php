@@ -67,18 +67,18 @@ class User
         return $this->group;
     }
 
-    public function addGrade(Group $grade): self
+    public function addGroup(Group $group): self
     {
-        if (!$this->group->contains($grade)) {
-            $this->group[] = $grade;
+        if (!$this->group->contains($group)) {
+            $this->group[] = $group;
         }
 
         return $this;
     }
 
-    public function removeGrade(Group $grade): self
+    public function removeGroup(Group $group): self
     {
-        $this->group->removeElement($grade);
+        $this->group->removeElement($group);
 
         return $this;
     }

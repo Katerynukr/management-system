@@ -20,6 +20,7 @@
                 </thead>
                 <tbody>
                     {% for user in users %}
+                    {% if user.group.count > 0 %}
                         <tr>
                             <td>{{ user.name }}</td>
                             <td>
@@ -33,6 +34,7 @@
                                 {% endfor %}
                             </td>
                         </tr>
+                    {% endif %}
                     {% endfor %}
                 </tbody>
             </table>
